@@ -20,17 +20,18 @@ conda activate rps_environment
 conda install pip
 pip install opencv-python
 pip install tensorflow
-pip install ipykernel'''
+pip install ipykernel
+```
 
 The first 2 commands create and go into the new rps_environment. The latter 4 commands install the package manager pip then install the needed packages through pip.
 
-I also downloaded the model I created in milestone 2 and checked it worked fine using the file RPS-Template.py provided by AiCore. This file sets up a camera to read hand signs, feeds the camera's data to the model, then collects the results from the model and stores them in the List called "prediction".
+- I also downloaded the model I created in milestone 2 and checked it worked fine using the file RPS-Template.py provided by AiCore. This file sets up a camera to read hand signs, feeds the camera's data to the model, then collects the results from the model and stores them in the List called "prediction".
 
 ## Milestone 4
 
 - I finally began writing python code. I wrote the code for the file manual_rps.py:
 
-'''python
+```python
 import random
 
 
@@ -63,7 +64,7 @@ def play():
 
 if __name__ == '__main__':
     play()
-'''
+```
 
 get_computer_choice and get_user_choice are fairly self-explanatory lambda functions. sign_converter and victory_converter are used for the get_winner function. Essentially, due to the circular nature of how rock, paper and scissors counter one another, we can use modulo arithmetic to circumvent the need for a massive list of if-elif-else statements for each of the 9 possible configurations. We could have even written get_winner as a single-line lambda function, but I thought this would be too ugly to read.
 
