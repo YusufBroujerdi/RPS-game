@@ -11,7 +11,13 @@ class RPSGame:
         self.model = load_model('keras_model.h5', compile=False)
         self.cap = cv2.VideoCapture(0)
         self.data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
-        self.key_pressed
+        self.key_pressed = False
+        self.counter = 6
+        self.countdown_ended = False
+        self.start_of_tick = np.Inf
+        self.computer_wins = 0
+        self.player_wins = 0
+
 
 
     def update_picture(self):
@@ -35,86 +41,84 @@ class RPSGame:
 
 
 
-    def metronome(counter, start_of_tick):
-        if time.time() < start_of_tick + 1.7:
-            return counter, start_of_tick
+    def metronome(self):
+        if time.time() < self.start_of_tick + 1.7:
+            return
         else:
-            print(counter - 1)
-            return counter - 1, start_of_tick + 1.7
+            print(self.counter - 1)
+            self.counter -= 1
+            self.start_of_tick += 1.7
 
 
 
-    def continue_round(key_pressed, counter, countdown_ended):
+    def continue_round(self):
         
         if cv2.waitKey(1) == ord('q'):
                     
             print('Prepare to choose!')
-            start_of_tick = time.time()
-            key_pressed = True
+            self.start_of_tick = time.time()
+            self.key_pressed = True
             
-        if key_pressed:
+        if self.key_pressed:
                 
-            counter, start_of_tick = metronome(counter, start_of_tick)
+            self.metronome()
                 
-            if counter == 0:
-                get_prediction()
-                countdown_ended = True
-        
-        return key_pressed, counter, countdown_ended
-
-
-
-    def play_game():
-        
-        key_pressed = False
-        counter = 6
-        countdown_ended = False
-        computer_wins = 0
-        player_wins = 0
-        
-        
-        while True:
-            
-            
-            update_picture()
-            key_pressed, counter, countdown_ended = continue_round(key_pressed, counter, countdown_ended)
-            
-            
-            if countdown_ended:
-                player_choice = get_prediction()
-                
-                if player_choice == 'Nothing':
-                    print('Hand sign not detected. Round nullified.')
-                    
-                else:
-                    result = man.get_winner(player_choice, man.get_computer_choice())
-                    print(result)
-                    if result == 'Player wins round':
-                        player_wins+=1
-                    if result == 'Computer wins round':
-                        computer_wins+=1
-                
-                key_pressed = False
-                counter = 6
-                countdown_ended = False
-                print(f'computer has won {computer_wins} rounds')
-                print(f'You have won {player_wins}')
-            
-            
-            if computer_wins == 3:
-                print('The computer has won!')
-                break
-            
-            
-            if player_wins == 3:
-                print('The player has won!')
-                break
-        
+            if self.counter == 0:
+                self.countdown_ended = True
         
         return
 
 
 
-play_game()
-cap.release()
-cv2.destroyAllWindows()
+    def play_game(self):
+        
+        
+        while True:
+            
+            
+            self.update_picture()
+            self.continue_round()
+            
+            
+            if self.countdown_ended:
+                player_choice = self.get_prediction()
+                
+                if player_choice == 'Nothing':
+                    print('Hand sign not detected. Round nullified.')
+                    
+                else:
+                    
+                    computer_choice = man.get_computer_choice()
+                    print(f'Player chose {player_choice}, computer chose {computer_choice}')
+                    result = man.get_winner(player_choice, computer_choice)
+                    print(result)
+                    
+                    if result == 'Player wins round':
+                        self.player_wins+=1
+                    if result == 'Computer wins round':
+                        self.computer_wins+=1
+                
+                self.key_pressed = False
+                self.counter = 6
+                self.countdown_ended = False
+                print(f'computer has won {self.computer_wins} rounds')
+                print(f'You have won {self.player_wins}')
+            
+            
+            if self.computer_wins == 3:
+                print('The computer has won!')
+                break
+            
+            
+            if self.player_wins == 3:
+                print('The player has won!')
+                break
+        
+        self.cap.release()
+        cv2.destroyAllWindows()
+        return
+
+
+
+player_match = RPSGame()
+player_match.play_game()

@@ -5,7 +5,7 @@ get_computer_choice = lambda: random.choice(['Rock', 'Paper', 'Scissors'])
 get_user_choice = lambda: input('Please choose between Rock, Paper or Scissors: ')
 sign_converter = {'Rock' : 0, 'Paper' : 1, 'Scissors' : 2}
 reverse_sign_converter = ['Rock', 'Paper', 'Scissors', 'Nothing']
-victory_converter = ['Draw', 'User wins', 'Computer wins']
+victory_converter = ['Draw', 'Player wins round', 'Computer wins round']
 
 
 
@@ -21,7 +21,7 @@ def play():
     user_choice = get_user_choice()
     
     if user_choice not in sign_converter:
-        print("Invalid choice. Game aborted.")
+        print('Invalid choice. Game aborted.')
         return
     
     print(f'Computer chose {computer_choice}')
