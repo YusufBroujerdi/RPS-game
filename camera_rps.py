@@ -138,11 +138,11 @@ class RPSGame:
                 self.countdown_ended = False
             
             if self.computer_wins == 3:
-                print('The computer has won!\n')
+                print('\nThe computer has won!\n')
                 break
             
             if self.player_wins == 3:
-                print('The player has won!\n')
+                print('\nThe player has won!\n')
                 break
         
         self.cap.release()
