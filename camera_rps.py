@@ -10,24 +10,44 @@ class RPSGame:
     
     def __init__(self):
         
-        self.model = load_model('keras_model.h5', compile=False)
+        self.model = load_model('keras_model.h5', compile = False)
         self.cap = cv2.VideoCapture(0)
-        self.data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
-        self.key_pressed = False
-        self.counter = 6
+        self.data = np.ndarray(shape = (1, 224, 224, 3), dtype = np.float32)
+        
+        self.countdown_started = False
+        self.counter = 5
         self.countdown_ended = False
         self.start_of_tick = np.Inf
+        
         self.computer_wins = 0
         self.player_wins = 0
-
-
-
+        
+        self.start_of_sign_tick = np.Inf
+        self.hand_sign_updated = True
+        self.current_hand_sign = 'Rock'
+        self.word_position_map = {'Rock' : 210, 'Paper' : 190, 'Scissors': 140}
+    
+    
+    
     def update_picture(self):
+        
         ret, frame = self.cap.read()
+              
+        if self.countdown_started:
+
+            self.hand_sign_updated, self.start_of_sign_tick = self.metronome(self.hand_sign_updated, self.start_of_sign_tick, 0.3)
+            
+            if self.hand_sign_updated != 1:
+                self.current_hand_sign = self.get_prediction()
+                self.hand_sign_updated = 1
+            
+            cv2.putText(frame, str(self.counter), (250, 400), cv2.FONT_HERSHEY_SIMPLEX, 3, (200, 135, 255), 3, 2)
+            cv2.putText(frame, self.current_hand_sign, (self.word_position_map[self.current_hand_sign], 250), cv2.FONT_HERSHEY_SIMPLEX, 3, (200, 135, 255), 3, 2)
+        
         cv2.imshow('frame', frame)
-
-
-
+    
+    
+    
     def get_prediction(self):
         
         #Captures and modifies an image from the webcam, before feeding it into the model.
@@ -37,35 +57,35 @@ class RPSGame:
         normalized_image = (image_np.astype(np.float32) / 127.0) - 1
         self.data[0] = normalized_image
         
-        prediction = self.model.predict(self.data)
+        prediction = self.model.predict(self.data, verbose = 0)
         prediction_number = np.argmax(prediction)
         return man.reverse_sign_converter[prediction_number]
-
-
-
-    def metronome(self):
+    
+    
+    
+    #Metronome is intended to run continuously and modify a given "state" whenever a specific span of time has passed since a previous tick.
+    def metronome(self, state, tick, span):
         
-        if time.time() < self.start_of_tick + 1.7:
-            return
+        if time.time() < tick + span:
+            return (state, tick)
         
         else:
-            print(self.counter - 1)
-            self.counter -= 1
-            self.start_of_tick += 1.7
-
-
-
+            return(state - 1, tick + span)
+    
+    
+    
     def continue_round(self):
         
         if cv2.waitKey(1) == ord('q'):
                     
-            print('Prepare to choose!')
+            print('\nPrepare to choose!')
             self.start_of_tick = time.time()
-            self.key_pressed = True
+            self.start_of_sign_tick = time.time()
+            self.countdown_started = True
             
-        if self.key_pressed:
+        if self.countdown_started:
                 
-            self.metronome()
+            self.counter, self.start_of_tick = self.metronome(self.counter, self.start_of_tick, 1.3)
                 
             if self.counter == 0:
                 self.countdown_ended = True
@@ -96,13 +116,15 @@ class RPSGame:
         
         print(f'computer has won {self.computer_wins} rounds.')
         print(f'You have won {self.player_wins}.')
-        print('Press q to continue.')
-
-
-
+        
+        if self.computer_wins != 3 and self.player_wins != 3:
+            print('Press q to continue.')
+    
+    
+    
     def play_game(self):
         
-        print('Welcome to my Rock Paper Scissors game! Press q to continue.')
+        print('\n\nWelcome to my Rock Paper Scissors game! Press q to continue.')
         
         while True:
             
@@ -111,16 +133,16 @@ class RPSGame:
             
             if self.countdown_ended:
                 self.compute_round()
-                self.key_pressed = False
-                self.counter = 6
+                self.countdown_started = False
+                self.counter = 5
                 self.countdown_ended = False
             
             if self.computer_wins == 3:
-                print('The computer has won!')
+                print('The computer has won!\n')
                 break
             
             if self.player_wins == 3:
-                print('The player has won!')
+                print('The player has won!\n')
                 break
         
         self.cap.release()
