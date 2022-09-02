@@ -24,8 +24,8 @@ class RPSGame:
         
         self.start_of_sign_tick = np.Inf
         self.hand_sign_updated = True
-        self.current_hand_sign = 'Rock'
-        self.word_position_map = {'Rock' : 210, 'Paper' : 190, 'Scissors': 140}
+        self.current_hand_sign = 'Nothing'
+        self.word_position_map = {'Rock' : 210, 'Paper' : 190, 'Scissors': 140, 'Nothing': 150}
     
     
     
@@ -118,13 +118,13 @@ class RPSGame:
         print(f'You have won {self.player_wins}.')
         
         if self.computer_wins != 3 and self.player_wins != 3:
-            print('Press q to continue.')
+            print('Press q to start the countdown.')
     
     
     
     def play_game(self):
         
-        print('\n\nWelcome to my Rock Paper Scissors game! Press q to continue.')
+        print('\n\nWelcome to my Rock Paper Scissors game! Press q to start the countdown!')
         
         while True:
             
