@@ -44,7 +44,7 @@ class RPSGame:
             cv2.putText(frame, str(self.counter), (250, 400), cv2.FONT_HERSHEY_SIMPLEX, 3, (200, 135, 255), 3, 2)
             cv2.putText(frame, self.current_hand_sign, (self.word_position_map[self.current_hand_sign], 250), cv2.FONT_HERSHEY_SIMPLEX, 3, (200, 135, 255), 3, 2)
         
-        cv2.imshow('frame', frame)
+        cv2.imshow('Game', frame)
     
     
     
@@ -114,7 +114,7 @@ class RPSGame:
             if result == 'Computer wins round.':
                 self.computer_wins+=1
         
-        print(f'computer has won {self.computer_wins} rounds.')
+        print(f'Computer has won {self.computer_wins} rounds.')
         print(f'You have won {self.player_wins}.')
         
         if self.computer_wins != 3 and self.player_wins != 3:
