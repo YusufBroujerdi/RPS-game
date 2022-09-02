@@ -76,7 +76,7 @@ class RPSGame:
     
     def continue_round(self):
         
-        if cv2.waitKey(1) == ord('q'):
+        if cv2.waitKey(1) == ord('q') and not self.countdown_started:
                     
             print('\nPrepare to choose!')
             self.start_of_tick = time.time()
