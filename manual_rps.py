@@ -5,7 +5,7 @@ get_computer_choice = lambda: random.choice(['Rock', 'Paper', 'Scissors'])
 get_user_choice = lambda: input('Please choose between Rock, Paper or Scissors: ')
 sign_converter = {'Rock' : 0, 'Paper' : 1, 'Scissors' : 2}
 reverse_sign_converter = ['Rock', 'Paper', 'Scissors', 'Nothing']
-victory_converter = ['Draw', 'Player wins round', 'Computer wins round']
+victory_converter = ['It is a draw.', 'Player wins round.', 'Computer wins round.']
 
 
 

@@ -4,7 +4,9 @@ import numpy as np
 import manual_rps as man
 import time
 
+
 class RPSGame:
+    
     
     def __init__(self):
         
@@ -42,8 +44,10 @@ class RPSGame:
 
 
     def metronome(self):
+        
         if time.time() < self.start_of_tick + 1.7:
             return
+        
         else:
             print(self.counter - 1)
             self.counter -= 1
@@ -67,48 +71,53 @@ class RPSGame:
                 self.countdown_ended = True
         
         return
+    
+    
+    
+    def compute_round(self):
+        
+        player_choice = self.get_prediction()
+                
+        if player_choice == 'Nothing':
+            
+            print('Hand sign not detected. Round nullified.')
+                    
+        else:
+                    
+            computer_choice = man.get_computer_choice()
+            print(f'Player chose {player_choice}, computer chose {computer_choice}.')
+            result = man.get_winner(player_choice, computer_choice)
+            print(result)
+                    
+            if result == 'Player wins round.':
+                self.player_wins+=1
+            if result == 'Computer wins round.':
+                self.computer_wins+=1
+        
+        print(f'computer has won {self.computer_wins} rounds.')
+        print(f'You have won {self.player_wins}.')
+        print('Press q to continue.')
 
 
 
     def play_game(self):
         
+        print('Welcome to my Rock Paper Scissors game! Press q to continue.')
         
         while True:
-            
             
             self.update_picture()
             self.continue_round()
             
-            
             if self.countdown_ended:
-                player_choice = self.get_prediction()
-                
-                if player_choice == 'Nothing':
-                    print('Hand sign not detected. Round nullified.')
-                    
-                else:
-                    
-                    computer_choice = man.get_computer_choice()
-                    print(f'Player chose {player_choice}, computer chose {computer_choice}')
-                    result = man.get_winner(player_choice, computer_choice)
-                    print(result)
-                    
-                    if result == 'Player wins round':
-                        self.player_wins+=1
-                    if result == 'Computer wins round':
-                        self.computer_wins+=1
-                
+                self.compute_round()
                 self.key_pressed = False
                 self.counter = 6
                 self.countdown_ended = False
-                print(f'computer has won {self.computer_wins} rounds')
-                print(f'You have won {self.player_wins}')
-            
             
             if self.computer_wins == 3:
                 print('The computer has won!')
                 break
-            
             
             if self.player_wins == 3:
                 print('The player has won!')
@@ -120,5 +129,6 @@ class RPSGame:
 
 
 
-player_match = RPSGame()
-player_match.play_game()
+if __name__ == '__main__':
+    player_match = RPSGame()
+    player_match.play_game()
