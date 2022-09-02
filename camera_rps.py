@@ -23,7 +23,7 @@ class RPSGame:
         self.player_wins = 0
         
         self.start_of_sign_tick = np.Inf
-        self.hand_sign_updated = True
+        self.hand_sign_updated = 1
         self.current_hand_sign = 'Nothing'
         self.word_position_map = {'Rock' : 210, 'Paper' : 190, 'Scissors': 140, 'Nothing': 150}
     
